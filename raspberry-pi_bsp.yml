@@ -1,0 +1,57 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+#### conditons
+    - name: install a webserver on ubuntu
+      apt:
+        name: apache2
+        state: latest
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: stop the service
+      service:
+         name: apache2
+         state: started
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Install nessesary package
+      apt:
+        name: apt-transport-https
+        state: present
+        update_cache: yes
+
+    - name: add grafana gpg key
+      shell: curl https://packages.grafana.com/gpg.key | sudo apt-key add -
+
+    - name: add grafana repo
+      apt_repository:
+        repo: https://dl.grafana.com/oss/release/grafana_7.1.0_arm64.deb
+        state: present
+        filename: grafana
+
+    - name: Install grafana
+      apt:
+        name: grafana
+        state: present
+        update_cache: yes
+
+    - name: Enable and start grafana service
+      service:
+        name: grafana-server
+        enabled: yes
+        state: started
+
+    - name: Import InfluxDB GPG signing key
+      apt_key: url=https://repos.influxdata.com/influxdb.key state=present
+      
+    - name: Add InfluxDB repository
+      apt_repository: repo='deb https://dl.influxdata.com/influxdb/releases/influxdb_1.8.5_arm64.deb' state=present
+      
+    - name: Install InfluxDB packages
+      apt: name=influxdb state=present
+      
+    - name: Start the InfluxDB service
+      service: name=influxdb state=restarted
+      
+      
