@@ -1,0 +1,12 @@
+[Unit]
+Description=My tunnelvpn Service
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart= bash -c "openvpn /etc/openvpn/client/client.conf > /var/log/tunnelvpn.log 2>&1"
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
