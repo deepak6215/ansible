@@ -3,6 +3,10 @@
   become: yes
   tasks:
 #### conditons
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+      ignore_errors: yes
+      
     - name: install a webserver on ubuntu
       apt:
         name: apache2
@@ -13,6 +17,103 @@
       service:
          name: apache2
          state: started
+      when: ansible_distribution == 'Ubuntu'
+      
+    - name: install a git-client on ubuntu
+      apt:
+        name: git
+        state: latest
+      when: ansible_distribution == 'Ubuntu'
+      
+   - name: install a vim on ubuntu
+      apt:
+        name: vim
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a tcpdump on ubuntu
+      apt:
+        name: tcpdump
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a screen on ubuntu
+      apt:
+        name: screen
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a unrar on ubuntu
+      apt:
+        name: unrar
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a htop on ubuntu
+      apt:
+        name: htop
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a net-tools on ubuntu
+      apt:
+        name: net-tools
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a dos2unix on ubuntu
+      apt:
+        name: dos2unix
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+      
+  - name: install a expect on ubuntu
+      apt:
+        name: expect
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a ntp on ubuntu
+      apt:
+        name: ntp
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a curl on ubuntu
+      apt:
+        name: curl
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a nodejs on ubuntu
+      apt:
+        name: nodejs
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a nmap on ubuntu
+      apt:
+        name: nmap
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a vsftpd on ubuntu
+      apt:
+        name: vsftpd
+        state: latest
+      ignore_errors: yes
       when: ansible_distribution == 'Ubuntu'
 
     - name: Install nessesary package
