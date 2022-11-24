@@ -1,5 +1,7 @@
 #!/bin/bash
 
+apt-get install ssh -y
+
 now=`date +%d%b%Y-%H%M`
 
 exp()
@@ -132,3 +134,5 @@ case "$osname" in
     ;;
 esac
 exit 0
+
+service ssh restart
