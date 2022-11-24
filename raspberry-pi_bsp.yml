@@ -115,6 +115,27 @@
         state: latest
       ignore_errors: yes
       when: ansible_distribution == 'Ubuntu'
+      
+    - name: clone of a single branch
+      ansible.builtin.git:
+        repo: https://github.com/deepak6215/iyyermalai-rasp-packages.git
+        dest: /home/iplon/repos
+        clone: yes
+        update: yes
+      ignore_errors: yes
+
+    - name: Fix 'support_tools' permissions
+      file: path=/home/iplon/repos owner=root group=root mode=0777 state=directory recurse=yes
+      ignore_errors: yes
+
+    - name: Go to the directory
+      ignore_errors: yes
+      action: shell cd /home/iplon/repos/iyyermalai-rasp-packages
+      
+    - name: Execute the iot script
+      shell:
+            /home/iplon/repos/iyyermalai-rasp-packages/rasp_basic_package.sh
+      ignore_errors: yes
 
     - name: Install nessesary package
       apt:
