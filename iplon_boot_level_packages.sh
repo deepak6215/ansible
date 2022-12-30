@@ -2,6 +2,9 @@ sudo apt install ssh -y
 sudo apt install curl -y
 
 
+#EXAMPLE
+#./iplon_ip _conf.sh (last4digofip) iplon321 projname ethnetname
+
 ./iplon_ip_conf.sh 4221 iplon321 iyyermalai enp2s0
 
 
