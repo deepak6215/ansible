@@ -34,3 +34,8 @@ mkdir iplon
 cd /opt/iplon
 mkdir scripts
 cp /home/iplon/ansible/iplon_vpn.sh /opt/iplon/scripts/
+
+
+mkdir -p /etc/docker/certs.d/ivpn.iplon.co.in:8443
+
+cp /home/iplon/ansible/ca.crt /etc/docker/certs.d/ivpn.iplon.co.in:8443
