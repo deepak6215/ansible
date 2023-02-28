@@ -1,0 +1,273 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+      ignore_errors: yes
+
+    - name: Update repository
+      apt_repository:
+       repo: 'ppa:git-core/ppa'
+       state: present
+      ignore_errors: yes
+
+    - name: Install git
+      apt:
+       name: git
+       state: present
+       update_cache: yes
+      ignore_errors: yes
+
+    - name: install a vim on ubuntu
+      apt:
+        name: vim
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a tcpdump on ubuntu
+      apt:
+        name: tcpdump
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a screen on ubuntu
+      apt:
+        name: screen
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a unrar on ubuntu
+      apt:
+        name: unrar
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a htop on ubuntu
+      apt:
+        name: htop
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a net-tools on ubuntu
+      apt:
+        name: net-tools
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a dos2unix on ubuntu
+      apt:
+        name: dos2unix
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a expect on ubuntu
+      apt:
+        name: expect
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a ntp on ubuntu
+      apt:
+        name: ntp
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a curl on ubuntu
+      apt:
+        name: curl
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a nodejs on ubuntu
+      apt:
+        name: nodejs
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a nmap on ubuntu
+      apt:
+        name: nmap
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install a vsftpd on ubuntu
+      apt:
+        name: vsftpd
+        state: latest
+      ignore_errors: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Add group "iplon" to remote server
+      group:
+        name: iplon
+        gid: 2010
+        state: present
+
+    - name: Add the user 'iplon' with a specific uid and a primary group of 'admin'
+      ansible.builtin.user:
+        name: iplon
+        comment: iplon
+        group: iplon
+      ignore_errors: yes
+
+    - name: Add the user 'www-data' with a specific uid and a primary group of 'admin'
+      ansible.builtin.user:
+        name: www-data
+        comment: www-data
+        group: www-data
+      ignore_errors: yes
+
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+      ignore_errors: yes
+
+    - name: Install dependencies
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - gnupg-agent
+      ignore_errors: yes
+      
+    - name: Add an apt signing key for Docker
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+      ignore_errors: yes
+
+    - name: Add apt repository for stable version
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+      ignore_errors: yes
+
+    - name: Install Docker
+      apt:
+        name: "{{ packages }}"
+        update_cache: yes
+      vars:
+        packages:
+        - docker-ce
+        - docker-ce-cli 
+        - containerd.io
+      ignore_errors: yes
+
+    - name: Reboot a slow machine that might have lots of updates to apply
+      reboot:
+        reboot_timeout: 300
+
+    - name: Git checkout
+      ansible.builtin.git:
+        repo: 'https://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@github.com/deepak6215/installpackage.git'
+        dest: /home/iplon/repos
+        force: yes
+        clone: yes
+        update: yes
+        version: release-0.22
+      ignore_errors: yes
+
+    - name: Fix 'support_tools' permissions
+      file: path=/home/iplon/repos owner=root group=root mode=0777 state=directory recurse=yes
+      ignore_errors: yes
+
+    - name: Go to the directory
+      ignore_errors: yes
+      action: shell cd /home/iplon/repos/
+
+    - name: Creating required directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - '/var/www/csvbackup'
+        - '/var/www/report/export/Scheduled_Report'
+        - '/var/www/iSolar/fetchDDT/csv'
+        - '/var/log/scaback_csv_influx_ingestor'
+        - '/var/log/prometheus'
+        - '/var/log/iGate_log'
+        - '/home/iplonshare/Scheduled_Report'
+        - '/home/iplonftp/csvbackup'
+        - '/home/iplonftp/Scheduled_Report'
+        - '/home/iplon/repos'
+
+    - name: Give insecure permissions to /var/www/*
+      ansible.builtin.file:
+        path: /var/www/
+        owner: www-data
+        group: www-data
+        mode: '1755'
+      ignore_errors: yes
+
+    - name: Give insecure permissions to an existing file
+      ansible.builtin.file:
+        path: /var/www/report/export/Scheduled_Report/
+        mode: '1777'
+      ignore_errors: yes
+
+    - name: Give insecure permissions to an existing file
+      ansible.builtin.file:
+        path: /var/www/iSolar/fetchDDT/csv
+        mode: '1777'
+      ignore_errors: yes
+
+    - name: Execute the iot script
+      shell:
+            /home/iplon/repos/iot.sh
+      ignore_errors: yes
+
+    - name: Give insecure permissions to /var/www/.config/
+      ansible.builtin.file:
+        path: /var/www/.config/
+        owner: www-data
+        group: www-data
+        mode: '1755'
+      ignore_errors: yes
+
+    - name: Give insecure permissions to an existing file
+      ansible.builtin.file:
+        path: /var/spool/cron/crontabs/root
+        owner: root
+        group: crontab
+        mode: '1600'
+      ignore_errors: yes
+
+    - name: Give insecure permissions to an existing file
+      ansible.builtin.file:
+        path: /etc/ntp.conf
+        owner: root
+        group: root
+        mode: '1644'
+      ignore_errors: yes
+
+    - name: Give insecure permissions to an existing file
+      ansible.builtin.file:
+        path: /etc/vsftpd.conf
+        owner: root
+        group: root
+        mode: '1644'
+      ignore_errors: yes
+
+    - name: Give insecure permissions to an existing file
+      ansible.builtin.file:
+        path: /var/log/report.log
+        mode: '1777'
+      ignore_errors: yes
